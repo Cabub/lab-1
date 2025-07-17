@@ -1,0 +1,12 @@
+[Unit]
+Description=Generate MAC for %i from hostname
+Before=systemd-networkd.service
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'hash=$(printf "%%s%%s" "$(uname -n)" "%i" | sha256sum | cut -c1-10); mac="02:$(printf "%%s" "$hash" | sed "s/../&:/g; s/:$$//")"; printf "[Match]\\nOriginalName=%%s\\n\\n[-macLink]\\nMACAddress=%%s\\n" "%i" "$mac" > /etc/systemd/network/10-hostname-derived-mac-%i.link'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=network-pre.target

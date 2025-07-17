@@ -1,0 +1,11 @@
+[Unit]
+Description=Generate machine-id from hostname
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'printf "%%s" "$(uname -n)" | sha256sum | cut -c1-32 > /etc/machine-id'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=sysinit.target
