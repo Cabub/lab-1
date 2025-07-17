@@ -1,4 +1,0 @@
-#!/bin/sh
-host=$(uname -n)
-hash=$(printf '%s' "$host" | sha256sum | cut -c1-10)
-echo "02:$(echo "$hash" | sed 's/../&:/g; s/:$//')"

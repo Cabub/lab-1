@@ -1,0 +1,12 @@
+[Unit]
+Description=Set MAC from hostname
+Before=systemd-networkd.service
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'for iface in $(ls /sys/class/net/ | grep -v lo); do printf "[Match]\\nOriginalName=%s\\n\\n[Link]\\nMACAddress=%s\\n" "$iface" "$(/usr/local/sbin/hostname-hash mac "$iface")" > "/etc/systemd/network/10-mac-$iface.link"; done; /usr/local/sbin/hostname-hash sha > /etc/machine-id'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=network-pre.target
