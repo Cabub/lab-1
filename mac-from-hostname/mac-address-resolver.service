@@ -1,0 +1,12 @@
+[Unit]
+Description=Set MAC from hostname
+Before=systemd-networkd.service
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'mac=$(/usr/local/sbin/mac-from-hostname); printf "[Match]\\nOriginalName=enp1s0\\n\\n[Link]\\nMACAddress=%%s\\n" "$mac" > /etc/systemd/network/10-mac.link'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=network-pre.target
